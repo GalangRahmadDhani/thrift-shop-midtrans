@@ -10,17 +10,9 @@ let core = new Midtrans.CoreApi({
 
 export async function GET(request, { params }) {
     try {
-        // Ambil orderId dari query params
-        const url = new URL(request.url);
-        const orderId = url.searchParams.get('orderId');
-        
-        if (!orderId) {
-            return NextResponse.json({ error: 'Order ID is required' }, { status: 400 });
-        }
-
+        const { orderId } = params;
         const status = await core.transaction.status(orderId);
         return NextResponse.json(status);
-        
     } catch (error) {
         console.error("Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
