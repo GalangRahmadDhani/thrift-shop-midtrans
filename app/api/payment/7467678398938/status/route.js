@@ -10,40 +10,20 @@ let core = new Midtrans.CoreApi({
 
 export async function GET(request, { params }) {
     try {
-        const { orderId } = params;
+        // Ambil orderId dari query params
+        const url = new URL(request.url);
+        const orderId = url.searchParams.get('orderId');
         
-        // Get transaction status from Midtrans
-        const status = await core.transaction.status(orderId);
-        
-        // Log untuk debugging
-        console.log('Transaction status:', status);
-        
-        // Response berdasarkan status transaksi
-        const responseData = {
-            order_id: status.order_id,
-            transaction_status: status.transaction_status,
-            fraud_status: status.fraud_status,
-            payment_type: status.payment_type,
-            status_code: status.status_code,
-            gross_amount: status.gross_amount,
-            transaction_time: status.transaction_time
-        };
-
-        if (status.status_code === '404') {
-            return NextResponse.json(
-                { error: 'Transaction not found' },
-                { status: 404 }
-            );
+        if (!orderId) {
+            return NextResponse.json({ error: 'Order ID is required' }, { status: 400 });
         }
 
-        return NextResponse.json(responseData);
+        const status = await core.transaction.status(orderId);
+        return NextResponse.json(status);
         
     } catch (error) {
-        console.error("Error checking transaction status:", error);
-        return NextResponse.json(
-            { error: error.message },
-            { status: 500 }
-        );
+        console.error("Error:", error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
 
