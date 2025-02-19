@@ -15,7 +15,8 @@ export async function POST(request) {
             first_name,
             last_name,
             email,
-            phone
+            phone,
+            items // tambahan untuk items
         } = await request.json();
 
         const parameter = {
@@ -23,15 +24,20 @@ export async function POST(request) {
                 order_id: order_id,
                 gross_amount: gross_amount
             },
-            // credit_card: {
-            //     secure: true
-            // },
             customer_details: {
                 first_name,
                 last_name,
                 email,
                 phone
-            }
+            },
+            item_details: items.map(item => ({
+                id: item.id,
+                price: item.price,
+                quantity: item.quantity,
+                name: item.name,
+                brand: item.brand,
+                category: item.category
+            }))
         };
 
         const transaction = await snap.createTransaction(parameter);
