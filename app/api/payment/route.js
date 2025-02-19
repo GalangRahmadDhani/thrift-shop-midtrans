@@ -23,9 +23,9 @@ export async function POST(request) {
                 order_id: order_id,
                 gross_amount: gross_amount
             },
-            credit_card: {
-                secure: true
-            },
+            // credit_card: {
+            //     secure: true
+            // },
             customer_details: {
                 first_name,
                 last_name,
